@@ -8,7 +8,16 @@ packages = [{include = "caps_ds_example"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+streamlit = "^1.22.0"
+polars = "^0.18.0"
+pandas = "^2.0.2"
+matplotlib = "^3.7.1"
 
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.2.7"
+ruff = "^0.0.270"
+black = "^23.3.0"
 
 [build-system]
 requires = ["poetry-core"]
