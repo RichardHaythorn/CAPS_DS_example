@@ -50,13 +50,13 @@ def format_times(
 
 
 def get_df(
-    filename: list[str],
+    filename: str,
     start_time: datetime.datetime,
     end_time: datetime.datetime,
     scale: bool = True,
 ) -> pd.DataFrame:
     
-    df = pl.concat([pl.read_csv(f).drop("") for f in filename])
+    df = pl.read_csv(filename).drop("")
 
     df = df.with_columns(
         pl.col("Time").str.strptime(pl.Datetime, "%Y-%m-%d %H:%M:%S%.f")
@@ -91,15 +91,17 @@ class RamModel:
         self.y_test = None
 
     def load_train_data(self, flyby_info: dict, scale: bool = True) -> None:
-        train_dfs = [
-            get_df(
-                flyby_info[flyby].filepath,
-                flyby_info[flyby].start_ram_time,
-                flyby_info[flyby].end_ram_time,
-                scale,
-            )
-            for flyby in self.train_flybys
-        ]
+        
+        train_dfs = []        
+        for flyby in self.train_flybys:
+            for anode_num, anode in flyby_info[flyby].anodes.items():
+                train_dfs.append(get_df(
+                    anode.filepath,
+                    anode.start_ram_time,
+                    anode.end_ram_time,
+                    scale,
+                ))
+
 
         df = pd.concat(train_dfs)
         X, y = make_X_y(df)

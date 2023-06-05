@@ -26,13 +26,12 @@ train_flybys = st.sidebar.multiselect(
 
 val_flyby = st.sidebar.selectbox("Choose validation flyby", flyby_info.keys())
 val_anode = st.sidebar.selectbox("Choose validation anode", ["3", "4"])
-anode_map = {"3": 0, "4": 1}
-val_filepath = [flyby_info[val_flyby].filepath[anode_map[val_anode]]]
+val_filepath = flyby_info[val_flyby].anodes[val_anode].filepath
 
 val_df = get_df(
     val_filepath,
-    flyby_info[val_flyby].start_ram_time,
-    flyby_info[val_flyby].end_ram_time,
+    flyby_info[val_flyby].anodes[val_anode].start_ram_time,
+    flyby_info[val_flyby].anodes[val_anode].end_ram_time,
     scale=False,
 )
 X_val, y_val = make_X_y(val_df)
