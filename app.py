@@ -7,9 +7,9 @@ import numpy as np
 from matplotlib.colors import LogNorm
 
 def get_els_figure(df):
-    x = df["Time"].to_numpy()
+    x = df.index.to_numpy()
     y = range(63)
-    z = df.drop("Time",axis=1).to_numpy().transpose()
+    z = df.to_numpy().transpose()
 
     fig, ax  =plt.subplots(figsize=(10,10))
     minmax = (1,6e4)
@@ -19,5 +19,6 @@ def get_els_figure(df):
 
 st.title("Cassini Plasma Spectrometer")
 
-df = pd.read_csv("ELS_data_1.csv").drop("Unnamed: 0",axis=1)
+df = pd.read_csv("ELS_data_T55.csv").drop("Unnamed: 0",axis=1)
+df = df.astype({"Time":"datetime64[ms]"}).set_index("Time").between_time("21:22","21:35")
 st.pyplot(get_els_figure(df))
