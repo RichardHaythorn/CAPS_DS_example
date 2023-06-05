@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LogNorm
 
+
+st.set_page_config(layout="wide")
+
 def get_els_figure(df):
     x = df.index.to_numpy()
     y = range(63)
@@ -19,6 +22,6 @@ def get_els_figure(df):
 
 st.title("Cassini Plasma Spectrometer")
 
-df = pd.read_csv("ELS_data_T55.csv").drop("Unnamed: 0",axis=1)
-df = df.astype({"Time":"datetime64[ms]"}).set_index("Time").between_time("21:22","21:35")
-st.pyplot(get_els_figure(df))
+flybys = ["T55","T56"]
+side_chk = st.sidebar.multiselect("Choose training flybys",flybys)
+text = st.sidebar.write(side_chk)

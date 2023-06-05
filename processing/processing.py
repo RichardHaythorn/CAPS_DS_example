@@ -1,6 +1,6 @@
 import pandas as pd
 import polars as pl
-from datetime import datetime
+import datetime
 
 def make_X_y(df: pl.DataFrame):
     X = df.select(pl.col("*").exclude("Rammed")).to_pandas()
