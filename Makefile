@@ -1,5 +1,0 @@
-lint:
-
-test:
-
-coverage:
