@@ -1,8 +1,6 @@
 import streamlit as st
 import polars as pl
-from sklearn.metrics import  ConfusionMatrixDisplay
-
-pl.Config.set_fmt_str_lengths(100)
+from sklearn.metrics import ConfusionMatrixDisplay
 
 from processing.processing import (
     RamModel,
@@ -12,6 +10,8 @@ from processing.processing import (
     incorrect_preds,
 )
 from processing.data import flyby_info
+
+pl.Config.set_fmt_str_lengths(100)
 
 st.set_page_config(layout="wide")
 

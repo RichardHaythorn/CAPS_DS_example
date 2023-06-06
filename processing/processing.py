@@ -8,7 +8,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import f1_score, precision_score
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.colors import LogNorm
 
 
@@ -39,7 +38,8 @@ def format_times(
 ):
     df = df.with_columns(
         (
-            pl.when(pl.col("Time").is_between(start_ram_time,end_ram_time,closed="none")
+            pl.when(
+                pl.col("Time").is_between(start_ram_time, end_ram_time, closed="none")
             )
             .then(1)
             .otherwise(0)
@@ -55,7 +55,7 @@ def get_df(
     end_time: datetime.datetime,
     scale: bool = True,
 ) -> pd.DataFrame:
-    
+
     df = pl.read_csv(filename).drop("")
 
     df = df.with_columns(
@@ -71,15 +71,20 @@ def get_df(
 
     return df
 
-def incorrect_preds(X_test, y_preds: np.ndarray, y_true: pd.Series = None) -> pd.DataFrame:
-    def join_y( y_pred: np.ndarray, y_true: pd.Series = None) -> pd.DataFrame:
+
+def incorrect_preds(
+    X_test, y_preds: np.ndarray, y_true: pd.Series = None
+) -> pd.DataFrame:
+    def join_y(y_pred: np.ndarray, y_true: pd.Series = None) -> pd.DataFrame:
         joint_y = y_true.to_frame()
         joint_y["predicted"] = y_pred
         return joint_y
+
     joint_y = join_y(y_preds, y_true)
     wrong_preds = joint_y.query("Rammed != predicted")
     wrong_preds = X_test[["Time"]].join(wrong_preds, how="right")
     return wrong_preds
+
 
 class RamModel:
     def __init__(self, train_flybys: list) -> None:
@@ -91,17 +96,18 @@ class RamModel:
         self.y_test = None
 
     def load_train_data(self, flyby_info: dict, scale: bool = True) -> None:
-        
-        train_dfs = []        
+
+        train_dfs = []
         for flyby in self.train_flybys:
             for anode_num, anode in flyby_info[flyby].anodes.items():
-                train_dfs.append(get_df(
-                    anode.filepath,
-                    anode.start_ram_time,
-                    anode.end_ram_time,
-                    scale,
-                ))
-
+                train_dfs.append(
+                    get_df(
+                        anode.filepath,
+                        anode.start_ram_time,
+                        anode.end_ram_time,
+                        scale,
+                    )
+                )
 
         df = pd.concat(train_dfs)
         X, y = make_X_y(df)
@@ -121,8 +127,6 @@ class RamModel:
 
     def f1_score(self, y_pred: pd.DataFrame = None):
         return f1_score(self.y_test, y_pred)
-    
-    
+
     def precision_score(self, y_pred: pd.DataFrame = None):
         return precision_score(self.y_test, y_pred)
-

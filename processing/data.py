@@ -1,6 +1,6 @@
-
 from datetime import datetime
 from dataclasses import dataclass
+
 
 @dataclass
 class Anode:
@@ -52,5 +52,5 @@ flyby_info = {
         },
         start_time=datetime(2009, 6, 6, 19, 57, 0),
         end_time=datetime(2009, 6, 6, 20, 7, 0),
-    )
+    ),
 }
