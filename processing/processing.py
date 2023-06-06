@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics import f1_score, precision_score
+
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
@@ -72,24 +72,21 @@ def get_df(
     return df
 
 
-def incorrect_preds(
-    X_test, y_preds: np.ndarray, y_true: pd.Series = None
+def join_y(
+    X_test: pd.DataFrame, y_pred: np.ndarray, y_true: pd.Series = None
 ) -> pd.DataFrame:
-    def join_y(y_pred: np.ndarray, y_true: pd.Series = None) -> pd.DataFrame:
-        joint_y = y_true.to_frame()
-        joint_y["predicted"] = y_pred
-        return joint_y
-
-    joint_y = join_y(y_preds, y_true)
-    wrong_preds = joint_y.query("Rammed != predicted")
-    wrong_preds = X_test[["Time"]].join(wrong_preds, how="right")
-    return wrong_preds
+    joint_y = y_true.to_frame()
+    joint_y["predicted"] = y_pred
+    joint_y = X_test[["Time"]].join(joint_y)
+    return joint_y
 
 
 class RamModel:
-    def __init__(self, train_flybys: list) -> None:
+    def __init__(self, train_flybys: list, max_iter: int = 100) -> None:
         self.train_flybys = train_flybys
-        self.pipe = make_pipeline(LogisticRegression(class_weight="balanced"))
+        self.pipe = make_pipeline(
+            LogisticRegression(class_weight="balanced", max_iter=max_iter)
+        )
         self.X_train = None
         self.X_test = None
         self.y_train = None
@@ -99,7 +96,7 @@ class RamModel:
 
         train_dfs = []
         for flyby in self.train_flybys:
-            for anode_num, anode in flyby_info[flyby].anodes.items():
+            for _, anode in flyby_info[flyby].anodes.items():
                 train_dfs.append(
                     get_df(
                         anode.filepath,
@@ -124,9 +121,3 @@ class RamModel:
             if df is None
             else self.pipe.predict(df.drop(columns="Time"))
         )
-
-    def f1_score(self, y_pred: pd.DataFrame = None):
-        return f1_score(self.y_test, y_pred)
-
-    def precision_score(self, y_pred: pd.DataFrame = None):
-        return precision_score(self.y_test, y_pred)
