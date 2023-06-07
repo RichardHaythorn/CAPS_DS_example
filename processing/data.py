@@ -26,12 +26,12 @@ flyby_info = {
     "T55": Flyby(
         anodes={
             "3": Anode(
-                "data/ELS_data_T55_a3.csv",
+                "data/ELS_data_T55_a3.parquet",
                 datetime(2009, 5, 21, 21, 26, 0),
                 datetime(2009, 5, 21, 21, 29, 0),
             ),
             "4": Anode(
-                "data/ELS_data_T55_a4.csv",
+                "data/ELS_data_T55_a4.parquet",
                 datetime(2009, 5, 21, 21, 24, 0),
                 datetime(2009, 5, 21, 21, 28, 0),
             ),
@@ -42,12 +42,12 @@ flyby_info = {
     "T56": Flyby(
         anodes={
             "3": Anode(
-                "data/ELS_data_T56_a3.csv",
+                "data/ELS_data_T56_a3.parquet",
                 datetime(2009, 6, 6, 19, 58, 0),
                 datetime(2009, 6, 6, 20, 3, 0),
             ),
             "4": Anode(
-                "data/ELS_data_T56_a4.csv",
+                "data/ELS_data_T56_a4.parquet",
                 datetime(2009, 6, 6, 19, 58, 0),
                 datetime(2009, 6, 6, 20, 3, 0),
             ),
@@ -58,12 +58,12 @@ flyby_info = {
     "T57": Flyby(
         anodes={
             "3": Anode(
-                "data/ELS_data_T57_a3.csv",
+                "data/ELS_data_T57_a3.parquet",
                 datetime(2009, 6, 22, 18, 30, 0),
                 datetime(2009, 6, 22, 18, 35, 0),
             ),
             "4": Anode(
-                "data/ELS_data_T57_a4.csv",
+                "data/ELS_data_T57_a4.parquet",
                 datetime(2009, 6, 22, 18, 30, 0),
                 datetime(2009, 6, 22, 18, 35, 0),
             ),

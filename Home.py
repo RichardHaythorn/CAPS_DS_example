@@ -1,6 +1,8 @@
 """Main entrypoint for the app"""
 import warnings
 
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import polars as pl
 import streamlit as st
@@ -18,7 +20,7 @@ pl.Config.set_fmt_str_lengths(100)
 st.set_page_config(layout="wide")
 
 
-st.title("Cassini Plasma Spectrometer")
+st.title("Rammed Ions at Titan - Cassini Plasma Spectrometer Data")
 st.divider()
 
 train_flybys = st.sidebar.multiselect(
@@ -37,14 +39,15 @@ y_pred = model.predict()
 col1, col2 = st.columns(2)
 with col1:
     st.subheader("Model Scores")
-    st.write(f"F1 Score: {f1_score(model.y_test, y_pred):.3f}")
-    st.write(f"Precision Score: {precision_score(model.y_test,y_pred):.3f}")
+    st.metric("F1 Score",np.round(f1_score(model.y_test, y_pred),3))
+    st.metric("Precision Score",np.round(precision_score(model.y_test, y_pred),3))
     if w:
         st.warning(w[0].message)
 
 with col2:
-    conf_matrix = ConfusionMatrixDisplay.from_predictions(model.y_test, y_pred)
-    st.pyplot(conf_matrix.figure_)
+    fig, ax = plt.subplots(figsize=(3,3))
+    conf_matrix = ConfusionMatrixDisplay.from_predictions(model.y_test, y_pred,ax=ax,display_labels=["Not Ram","Ram"],colorbar=False)
+    st.pyplot(conf_matrix.figure_,use_container_width=False)
 
 
 st.divider()

@@ -60,7 +60,7 @@ def get_df(
 ) -> pd.DataFrame:
     """Get and format a dataframe from a file"""
 
-    dataframe = pl.read_csv(filename).drop("")
+    dataframe = pl.read_parquet(filename).drop("Unnamed: 0")
 
     dataframe = dataframe.with_columns(
         pl.col("Time").str.strptime(pl.Datetime, "%Y-%m-%d %H:%M:%S%.f")

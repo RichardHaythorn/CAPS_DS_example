@@ -10,7 +10,7 @@ st.set_page_config(layout="wide")
 
 def get_df(flyby_info, selected_flyby, selected_anode, start_time, end_time):
     """Get dataframe for a given flyby & anode"""
-    dataframe = pd.read_csv(flyby_info[selected_flyby].anodes[selected_anode].filepath).drop(
+    dataframe = pd.read_parquet(flyby_info[selected_flyby].anodes[selected_anode].filepath).drop(
         "Unnamed: 0", axis=1
     )
     dataframe = (
