@@ -71,4 +71,36 @@ flyby_info = {
         start_time=datetime(2009, 6, 22, 18, 25, 0),
         end_time=datetime(2009, 6, 22, 18, 40, 0),
     ),
+    "T58": Flyby(
+        anodes={
+            "3": Anode(
+                "data/ELS_data_T58_a3.parquet",
+                datetime(2009, 7, 8, 17, 4, 0),
+                datetime(2009, 7, 8, 17, 7, 0),
+            ),
+            "4": Anode(
+                "data/ELS_data_T58_a4.parquet",
+                datetime(2009, 7, 8, 17, 1, 0),
+                datetime(2009, 7, 8, 17, 4, 0),
+            ),
+        },
+        start_time=datetime(2009, 7, 8, 17, 0, 0),
+        end_time=datetime(2009, 7, 8, 17, 10, 0),
+    ),
+    "T59": Flyby(
+        anodes={
+            "3": Anode(
+                "data/ELS_data_T59_a3.parquet",
+                datetime(2009, 7, 24, 15, 32, 0),
+                datetime(2009, 7, 24, 15, 36, 0),
+            ),
+            "4": Anode(
+                "data/ELS_data_T59_a4.parquet",
+                datetime(2009, 7, 24, 15, 33, 0),
+                datetime(2009, 7, 24, 15, 36, 0),
+            ),
+        },
+        start_time=datetime(2009, 7, 24, 15, 20, 0),
+        end_time=datetime(2009, 7, 24, 15, 35, 0),
+    ),
 }

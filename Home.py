@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import polars as pl
+import seaborn as sns
 import streamlit as st
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import f1_score, precision_score
@@ -75,7 +76,7 @@ if val_flyby_options:
 
     plot_col1, plot_col2 = st.columns(2)
     with plot_col1:
-        shade_ram = st.checkbox("Shade Predicted Ram", value=True)
+        ram_rugplot = st.checkbox("Predicted Ram Rugplot", value=True)
 
     y_val_pred = model.predict(X_val)
     joint_y = join_y(X_val, y_val_pred, y_val)
@@ -89,18 +90,10 @@ if val_flyby_options:
 
     fig, ax = get_els_figure(val_df)
 
-    if shade_ram:
-        ax.fill_between(
-            [
-                start_time,
-                end_time,
-            ],
-            0,
-            63,
-            alpha=0.35,
-            color="r",
-        )
+    if ram_rugplot:
+        sns.rugplot(data=joint_y.query("predicted == 1"),x="Time",ax=ax,color='r',height=0.15)
     ax.set_ylim(0, 62)
     st.pyplot(fig)
+    st.write(joint_y)
 else:
     st.write("No available flybys")
