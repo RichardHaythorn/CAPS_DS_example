@@ -1,3 +1,4 @@
+"""Page for labelling the data"""
 from datetime import datetime
 import pandas as pd
 import streamlit as st
@@ -8,19 +9,21 @@ st.set_page_config(layout="wide")
 
 
 def get_df(flyby_info, selected_flyby, selected_anode, start_time, end_time):
-    df = pd.read_csv(flyby_info[selected_flyby].anodes[selected_anode].filepath).drop(
+    """Get dataframe for a given flyby & anode"""
+    dataframe = pd.read_csv(flyby_info[selected_flyby].anodes[selected_anode].filepath).drop(
         "Unnamed: 0", axis=1
     )
-    df = (
-        df.astype({"Time": "datetime64[ms]"})
+    dataframe = (
+        dataframe.astype({"Time": "datetime64[ms]"})
         .set_index("Time")
         .between_time(start_time, end_time)
     )
 
-    return df
+    return dataframe
 
 
 def update_flyby_attr(selected_flyby, name):
+    """Update a given flyby attribute in the session state"""
     set_time = getattr(st.session_state, name)
     set_date = getattr(st.session_state["flyby_info"][selected_flyby], name).date()
     new_datetime = datetime.combine(set_date, set_time)
@@ -32,6 +35,7 @@ def update_flyby_attr(selected_flyby, name):
 
 
 def update_anode_attr(selected_flyby, selected_anode, name):
+    """Update a given flyby attribute in the session state"""
     set_time = getattr(st.session_state, name)
     set_date = getattr(
         st.session_state["flyby_info"][selected_flyby].anodes[selected_anode], name
@@ -42,7 +46,6 @@ def update_anode_attr(selected_flyby, selected_anode, name):
         name,
         new_datetime,
     )
-
 
 st.title("Data exploration")
 
@@ -85,12 +88,12 @@ end_ram_time = st.sidebar.time_input(
     key="end_ram_time",
 )
 
-df = get_df(flyby_info, selected_flyby, selected_anode, start_time, end_time)
+dataframe = get_df(flyby_info, selected_flyby, selected_anode, start_time, end_time)
 
 plot_col1, plot_col2 = st.columns(2)
 with plot_col1:
     shade_ram = st.checkbox("Shade Labelled Ram", value=True)
-fig, ax = get_els_figure(df)
+fig, ax = get_els_figure(dataframe)
 if shade_ram:
     ax.fill_between(
         [

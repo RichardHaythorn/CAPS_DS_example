@@ -1,12 +1,13 @@
-import streamlit as st
-import polars as pl
-import pandas as pd
-from sklearn.metrics import ConfusionMatrixDisplay
-from sklearn.metrics import f1_score, precision_score
+"""Main entrypoint for the app"""
 import warnings
 
-from processing.processing import RamModel, get_df, get_els_figure, make_X_y, join_y
+import pandas as pd
+import polars as pl
+import streamlit as st
+from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import f1_score, precision_score
 
+from processing.processing import RamModel, get_df, get_els_figure, make_x_y, join_y
 from processing.data import flyby_info
 
 if "flyby_info" not in st.session_state:
@@ -67,7 +68,7 @@ if val_flyby_options:
         st.session_state["flyby_info"][val_flyby].anodes[val_anode].end_ram_time,
         scale=False,
     )
-    X_val, y_val = make_X_y(val_df)
+    X_val, y_val = make_x_y(val_df)
 
     plot_col1, plot_col2 = st.columns(2)
     with plot_col1:

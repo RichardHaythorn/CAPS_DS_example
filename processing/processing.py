@@ -1,20 +1,21 @@
-import pandas as pd
-import polars as pl
+"""Main processing functions and classes"""
 import datetime
-import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import make_pipeline
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+import numpy as np
+import pandas as pd
+import polars as pl
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 
-def get_els_figure(df):
-    x = df.index.to_numpy()
+def get_els_figure(dataframe):
+    """Creates a spectrogram of the given dataframe"""
+    x = dataframe.index.to_numpy()
     y = range(63)
-    z = df.to_numpy().transpose()
+    z = dataframe.to_numpy().transpose()
 
     fig, ax = plt.subplots(figsize=(20, 10))
     minmax = (1, 6e5)
@@ -27,15 +28,17 @@ def get_els_figure(df):
     return fig, ax
 
 
-def make_X_y(df: pd.DataFrame):
-    X = df.drop(columns="Rammed")
-    y = df["Rammed"]
+def make_x_y(dataframe: pd.DataFrame):
+    """Split a dataframe into X and y"""
+    X = dataframe.drop(columns="Rammed")
+    y = dataframe["Rammed"]
     return X, y
 
 
 def format_times(
     df: pl.DataFrame, start_ram_time: datetime.datetime, end_ram_time: datetime.datetime
 ):
+    """Label certain times as ram"""
     df = df.with_columns(
         (
             pl.when(
@@ -55,26 +58,28 @@ def get_df(
     end_time: datetime.datetime,
     scale: bool = True,
 ) -> pd.DataFrame:
+    """Get and format a dataframe from a file"""
 
-    df = pl.read_csv(filename).drop("")
+    dataframe = pl.read_csv(filename).drop("")
 
-    df = df.with_columns(
+    dataframe = dataframe.with_columns(
         pl.col("Time").str.strptime(pl.Datetime, "%Y-%m-%d %H:%M:%S%.f")
     )
 
-    df = format_times(df, start_time, end_time)
+    dataframe = format_times(dataframe, start_time, end_time)
 
-    df = df.to_pandas()
+    dataframe = dataframe.to_pandas()
 
     if scale:
-        df.iloc[:, :63] = StandardScaler().fit_transform(df.iloc[:, :63])
+        dataframe.iloc[:, :63] = StandardScaler().fit_transform(dataframe.iloc[:, :63])
 
-    return df
+    return dataframe
 
 
 def join_y(
     X_test: pd.DataFrame, y_pred: np.ndarray, y_true: pd.Series = None
 ) -> pd.DataFrame:
+    """Join the predictions to the truth, add times"""
     joint_y = y_true.to_frame()
     joint_y["predicted"] = y_pred
     joint_y = X_test[["Time"]].join(joint_y)
@@ -82,18 +87,18 @@ def join_y(
 
 
 class RamModel:
+    """Class for holding the sklearn model"""
+
     def __init__(self, train_flybys: list, max_iter: int = 100) -> None:
         self.train_flybys = train_flybys
-        self.pipe = make_pipeline(
-            LogisticRegression(class_weight="balanced", max_iter=max_iter)
-        )
+        self.clf = LogisticRegression(class_weight="balanced", max_iter=max_iter)
         self.X_train = None
         self.X_test = None
         self.y_train = None
         self.y_test = None
 
     def load_train_data(self, flyby_info: dict, scale: bool = True) -> None:
-
+        """Load data from flybys"""
         train_dfs = []
         for flyby in self.train_flybys:
             for _, anode in flyby_info[flyby].anodes.items():
@@ -106,18 +111,20 @@ class RamModel:
                     )
                 )
 
-        df = pd.concat(train_dfs)
-        X, y = make_X_y(df)
+        dataframe = pd.concat(train_dfs)
+        X, y = make_x_y(dataframe)
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             X, y, random_state=42
         )
 
     def fit(self):
-        self.pipe.fit(self.X_train.drop(columns="Time"), self.y_train)
+        """Wrapper for fit"""
+        self.clf.fit(self.X_train.drop(columns="Time"), self.y_train)
 
     def predict(self, df: pd.DataFrame = None):
+        """Wrapper for predict"""
         return (
-            self.pipe.predict(self.X_test.drop(columns="Time"))
+            self.clf.predict(self.X_test.drop(columns="Time"))
             if df is None
-            else self.pipe.predict(df.drop(columns="Time"))
+            else self.clf.predict(df.drop(columns="Time"))
         )

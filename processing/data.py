@@ -1,3 +1,5 @@
+"""Place for holding data about flybys"""
+
 from datetime import datetime
 from dataclasses import dataclass
 
