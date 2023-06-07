@@ -10,9 +10,9 @@ st.set_page_config(layout="wide")
 
 def get_df(flyby_info, selected_flyby, selected_anode, start_time, end_time):
     """Get dataframe for a given flyby & anode"""
-    dataframe = pd.read_parquet(flyby_info[selected_flyby].anodes[selected_anode].filepath).drop(
-        "Unnamed: 0", axis=1
-    )
+    dataframe = pd.read_parquet(
+        flyby_info[selected_flyby].anodes[selected_anode].filepath
+    ).drop("Unnamed: 0", axis=1)
     dataframe = (
         dataframe.astype({"Time": "datetime64[ms]"})
         .set_index("Time")
@@ -46,6 +46,7 @@ def update_anode_attr(selected_flyby, selected_anode, name):
         name,
         new_datetime,
     )
+
 
 st.title("Data exploration")
 

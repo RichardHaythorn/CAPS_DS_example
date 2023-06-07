@@ -40,15 +40,17 @@ y_pred = model.predict()
 col1, col2 = st.columns(2)
 with col1:
     st.subheader("Model Scores")
-    st.metric("F1 Score",np.round(f1_score(model.y_test, y_pred),3))
-    st.metric("Precision Score",np.round(precision_score(model.y_test, y_pred),3))
+    st.metric("F1 Score", np.round(f1_score(model.y_test, y_pred), 3))
+    st.metric("Precision Score", np.round(precision_score(model.y_test, y_pred), 3))
     if w:
         st.warning(w[0].message)
 
 with col2:
-    fig, ax = plt.subplots(figsize=(3,3))
-    conf_matrix = ConfusionMatrixDisplay.from_predictions(model.y_test, y_pred,ax=ax,display_labels=["Not Ram","Ram"],colorbar=False)
-    st.pyplot(conf_matrix.figure_,use_container_width=False)
+    fig, ax = plt.subplots(figsize=(3, 3))
+    conf_matrix = ConfusionMatrixDisplay.from_predictions(
+        model.y_test, y_pred, ax=ax, display_labels=["Not Ram", "Ram"], colorbar=False
+    )
+    st.pyplot(conf_matrix.figure_, use_container_width=False)
 
 
 st.divider()
@@ -91,7 +93,13 @@ if val_flyby_options:
     fig, ax = get_els_figure(val_df)
 
     if ram_rugplot:
-        sns.rugplot(data=joint_y.query("predicted == 1"),x="Time",ax=ax,color='r',height=0.15)
+        sns.rugplot(
+            data=joint_y.query("predicted == 1"),
+            x="Time",
+            ax=ax,
+            color="r",
+            height=0.15,
+        )
     ax.set_ylim(0, 62)
     st.pyplot(fig)
     st.write(joint_y)

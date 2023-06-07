@@ -5,8 +5,12 @@ st.set_page_config(layout="wide")
 
 st.title("Possible things to add")
 
-st.markdown("""
+st.markdown(
+    """
+- Clean data to remove anomalies
 - Cross-validation of data
 - More flybys
 - Investigate different classifiers
-""")
+- Hyperparameter tuning
+"""
+)
