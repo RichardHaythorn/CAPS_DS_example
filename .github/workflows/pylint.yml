@@ -14,10 +14,23 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        pipx install poetry==1.5.0
-        poetry install
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
+    - name: cache poetry install
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-1.5.0-0
+    - uses: snok/install-poetry@v1
+      with:
+        version: 1.5.0
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    - name: cache deps
+      id: cache-deps
+      uses: actions/cache@v2
+      with:
+        path: .venv
+        key: pydeps-${{ hashFiles('**/poetry.lock') }}
+    - run: poetry install --no-interaction --no-root
+      if: steps.cache-deps.outputs.cache-hit != 'true'
+    - run: poetry install --no-interaction
+    - run: poetry run pylint
